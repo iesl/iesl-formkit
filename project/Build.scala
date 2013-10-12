@@ -1,12 +1,4 @@
-import _root_.sbtassembly.Plugin.AssemblyKeys
-import edu.umass.cs.iesl.sbtbase.IeslProject.ConflictStrict
-import edu.umass.cs.iesl.sbtbase.IeslProject.Public
-import edu.umass.cs.iesl.sbtbase.IeslProject.WithSnapshotDependencies
 import sbt._
-import Keys._
-import edu.umass.cs.iesl.sbtbase.Dependencies
-import edu.umass.cs.iesl.sbtbase.IeslProject._
-import sbt.Keys._
 import Keys._
 import edu.umass.cs.iesl.sbtbase.Dependencies
 import edu.umass.cs.iesl.sbtbase.IeslProject._

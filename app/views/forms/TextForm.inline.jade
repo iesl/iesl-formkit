@@ -1,0 +1,10 @@
+-@ val it : forms.TextForm
+-@ val prefix: String
+-@ val id: String
+-@ val placeholder: String
+-@ val classattr: String = "input-large"
+- import it._
+
+input(type="text" name={prefix} id={id} value={prefill} placeholder={placeholder} class={classattr})
+-# span.help-block= errors.mkString("; ")
+-# span.help-block this is the help-block

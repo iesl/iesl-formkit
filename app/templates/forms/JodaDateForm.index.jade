@@ -1,0 +1,13 @@
+-@ val prefix: String
+-@ val id: String
+-@ val validate : Boolean = false
+
+- import model.GlobalFormats.dateformat
+
+.input
+  input(type="text" name={prefix} value={prefill.map(dateformat.print(_)).getOrElse("")} id={id})
+  span.help-inline= if(validate) errors.mkString("; ") else constraintInfos.mkString("; ")
+  :&javascript
+    $('##{id}').datepicker({
+        format: 'yyyy-mm-dd'
+    });

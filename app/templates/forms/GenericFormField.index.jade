@@ -1,0 +1,13 @@
+
+
+-@ val prefix : String
+-@ val idPrefix : String = ""
+-@ val validate : Boolean = false
+
+- val subprefix = (prefix + "." + key)
+- val id = idPrefix + subprefix.replace(".","_")
+
+.control-group(class={if(validate && form.hasErrors) "error" else ""})
+  label.control-label(for={id})= displayName
+  .controls
+    - template(form, "index")("prefix" -> subprefix, "idPrefix" -> idPrefix, "id" -> id)

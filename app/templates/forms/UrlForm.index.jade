@@ -1,0 +1,8 @@
+-@ val prefix: String
+-@ val id: String
+-@ val validate : Boolean = false
+
+.input
+  input(type="text" name={prefix} id={id} value={prefill})
+  span.help-inline= if(validate) errors.mkString("; ") else constraintInfos.mkString("; ")
+  -# span.help-block this is the help-block

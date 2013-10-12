@@ -1,0 +1,17 @@
+-# deprecated
+
+
+-@ val prefix: String
+-# -@ val postUrl: String
+
+- val postUrl = "/eventtemplate/newevent"
+form.ajax.form-horizontal(action="#{postUrl}" method="POST" data-replace=".form-event")
+  -#fieldset  
+  - view(it, "index")
+  .control-group
+    .controls
+      button.btn(type="submit") Submit
+  hr
+  -# =form.errors.mkString(", ")
+  .form-event
+  hr

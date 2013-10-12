@@ -1,0 +1,10 @@
+-@ val it : forms.BooleanForm
+-@ val prefix: String
+-@ val id: String
+-@ val validate : Boolean = false
+- import it._
+
+.input
+  input(type="checkbox" name={prefix} id={id} checked={prefill})
+  span.help-inline= if(validate) errors.mkString("; ") else constraintInfos.mkString("; ")
+  -# span.help-block this is the help-block

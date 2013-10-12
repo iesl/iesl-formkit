@@ -1,0 +1,9 @@
+-@ val it : forms.HiddenTextForm
+-@ val prefix: String
+-@ val id: String
+- import it._
+
+.input
+  input(type="hidden" name={prefix} id={id} value={prefill.map(_.s).getOrElse("")})
+  -# span.help-inline= "hidden field " + prefix + " = " + prefill
+  -# span.help-block this is the help-block

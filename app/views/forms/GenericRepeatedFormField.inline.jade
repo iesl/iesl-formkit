@@ -1,0 +1,30 @@
+-@ val prefix : String
+-@ val idPrefix : String = ""
+-@ val newRowUrl: String
+-@ val validate : Boolean = false
+
+- val groupprefix = (prefix + "." + name)
+- val groupid = groupprefix.replace(".","_")
+- val nextindex = 45
+- val showforms = if(forms.isEmpty) List(formfactory()) else forms
+
+:&javascript
+  var counter = #{showforms.size}
+  function increment(){
+    document.getElementById("#{"increment" + groupid}").href = "#{newRowUrl + "/" + groupprefix + "."}" + (++counter);
+  }
+
+.control-group
+  label.control-label(class={if(validate && hasErrors) "validationerror" else ""})
+    = displayName
+    br
+    a.ajax(href={newRowUrl + "/" + groupprefix + "." + (forms.size+1)} data-append={".repeated" + groupid} id={"increment" + groupid} onclick="increment()" data-spinner="off")
+      i.icon-plus-sign(title="Add")
+  .controls
+    span(class={"repeated" + groupid})
+      - for((f, index)<-(showforms).zipWithIndex) {
+      -   val subprefix = (groupprefix + "." + index)
+      -   val id = idPrefix + subprefix.replace(".","_")
+      -   template(f, "inline")('prefix -> subprefix, 'idPrefix -> idPrefix, 'id -> id)
+      - }
+    span.help-inline= if(validate) errors.mkString("; ") else constraintInfos.mkString("; ")

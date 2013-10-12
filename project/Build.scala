@@ -3,9 +3,6 @@ import Keys._
 import edu.umass.cs.iesl.sbtbase.Dependencies
 import edu.umass.cs.iesl.sbtbase.IeslProject._
 
-import sbtassembly.Plugin._
-import AssemblyKeys._
-
 import play.Project._
 
 object IeslFormKitBuild extends Build {

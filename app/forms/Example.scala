@@ -101,6 +101,7 @@ class ExampleForm(override val prefill: Option[ExampleData] = None,
   /*
    * Provide the required modified-copy constructors.
    * These can't be easily generified because we don't know the constructor arguments of concrete subclasses.
+   * There is probably a clever Spiewak-style cake thing that could be done, but not now.
    */
 
   def withConstraint(c: FieldConstraint[PrefillableNestedForm[ExampleData]]): ExampleForm = new ExampleForm(prefill, constraints :+ c)

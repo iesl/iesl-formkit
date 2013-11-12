@@ -8,7 +8,7 @@ import org.joda.time.DateTime
 import play.api.libs.Files
 import play.api.mvc.MultipartFormData
 import play.api.mvc.MultipartFormData.FilePart
-import scala.collection.mutable
+import scala.collection.{GenSet, mutable}
 
 /*
  * Concrete form fields.  These have scalate view templates.
@@ -68,10 +68,23 @@ case class TextSelectForm(override val prefill: Option[NonemptyString],
   def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]) = new
       TextSelectForm(stringData(data), options, constraints)
   def fill(xopt: Option[NonemptyString]) = new TextSelectForm(xopt, options, constraints)
-  def withConstraint(c: FieldConstraint[PrefillableNestedForm[NonemptyString]]) = new HiddenTextForm(prefill,
+  def withConstraint(c: FieldConstraint[PrefillableNestedForm[NonemptyString]]) = new TextSelectForm(prefill, options,
     constraints :+ c)
 }
 
+
+case class CheckboxGroupForm(override val prefill: Option[GenSet[NonemptyString]],
+                          options: mutable.LinkedHashMap[NonemptyString, NonemptyString],
+                          override val constraints: Seq[FieldConstraint[PrefillableNestedForm[GenSet[NonemptyString]]]] = Nil)
+  extends PrefillCanonicalConstrainedNestedForm[GenSet[NonemptyString]] {
+
+  def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]) = new
+      CheckboxGroupForm(None, options, constraints)  // todo stringData(data)
+  def fill(xopt: Option[GenSet[NonemptyString]]) = new CheckboxGroupForm(xopt, options, constraints)
+  def withConstraint(c: FieldConstraint[PrefillableNestedForm[GenSet[NonemptyString]]]) = new CheckboxGroupForm(prefill,options,
+    constraints :+ c)
+
+}
 
 case class UrlForm(override val prefill: Option[URL], override val constraints:
 Seq[FieldConstraint[PrefillableNestedForm[URL]]] = Nil) extends PrefillCanonicalConstrainedNestedForm[URL] {

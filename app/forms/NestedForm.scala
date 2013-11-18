@@ -105,6 +105,8 @@ trait ConstrainedNestedForm[F] extends GenericConstrainedNestedForm with Prefill
   def required(isRequired: Boolean = true): ConstrainedNestedForm[F] = if (isRequired) withConstraint(new
       RequiredConstraint[PrefillableNestedForm[F]])
   else this
+  
+  def withMessage(message:String): ConstrainedNestedForm[F] = withConstraint(new InfoNoConstraint[PrefillableNestedForm[F]](message))
 }
 
 

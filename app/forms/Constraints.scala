@@ -40,3 +40,8 @@ case class FixedConstraint[X, -T <: NestedForm[_]](fixedValue: X) extends FieldC
   actual == Some(fixedValue)
 }
 )
+
+
+
+class InfoNoConstraint[T <: PrefillableNestedForm[_]](message:String) extends FieldConstraint[T]("bogus", Nil,
+  Some(message))(t =>true)

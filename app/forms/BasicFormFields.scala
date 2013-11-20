@@ -2,14 +2,16 @@ package forms
 
 import FormUtils._
 import com.typesafe.scalalogging.slf4j.Logging
-import edu.umass.cs.iesl.scalacommons.NonemptyString
+import edu.umass.cs.iesl.scalacommons.{StringUtils, NonemptyString}
 import java.net.URL
 import org.joda.time.DateTime
 import play.api.libs.Files
 import play.api.mvc.MultipartFormData
 import play.api.mvc.MultipartFormData.FilePart
 import scala.collection.{GenSet, mutable}
+import org.joda.time.format.DateTimeFormatter
 
+import StringUtils._
 /*
  * Concrete form fields.  These have scalate view templates.
  */
@@ -73,16 +75,25 @@ case class TextSelectForm(override val prefill: Option[NonemptyString],
 }
 
 
-case class CheckboxGroupForm(override val prefill: Option[GenSet[NonemptyString]],
+case class BooleanGroupForm(override val prefill: Option[GenSet[NonemptyString]],
                           options: mutable.LinkedHashMap[NonemptyString, NonemptyString],
                           override val constraints: Seq[FieldConstraint[PrefillableNestedForm[GenSet[NonemptyString]]]] = Nil)
   extends PrefillCanonicalConstrainedNestedForm[GenSet[NonemptyString]] {
+  
+  val fields : Iterable[FormField[Boolean]] = options.map({case (key,name) => new FormField(key,new BooleanForm(prefill.map(p=>p.contains(key))),Some(name))})
 
-  def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]) = new
-      CheckboxGroupForm(None, options, constraints)  // todo stringData(data)
-  def fill(xopt: Option[GenSet[NonemptyString]]) = new CheckboxGroupForm(xopt, options, constraints)
-  def withConstraint(c: FieldConstraint[PrefillableNestedForm[GenSet[NonemptyString]]]) = new CheckboxGroupForm(prefill,options,
-    constraints :+ c)
+  def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]) = {
+    val boundFields = fields.map(_.nestedBind(data))
+    val trueFieldKeys = boundFields.filter(_.nestedGet.getOrElse(false)).map(_.key.n).toSet
+    new BooleanGroupForm(Some(trueFieldKeys), options, constraints)
+  }
+     
+  def fill(xopt: Option[GenSet[NonemptyString]]) = {
+    new BooleanGroupForm(xopt, options, constraints)
+  }
+  def withConstraint(c: FieldConstraint[PrefillableNestedForm[GenSet[NonemptyString]]]) = {
+    new BooleanGroupForm(prefill,options, constraints :+ c)
+  }
 
 }
 
@@ -96,9 +107,9 @@ Seq[FieldConstraint[PrefillableNestedForm[URL]]] = Nil) extends PrefillCanonical
 
 
 case class JodaDateForm(override val prefill: Option[DateTime], override val constraints:
-Seq[FieldConstraint[PrefillableNestedForm[DateTime]]] = Nil) extends PrefillCanonicalConstrainedNestedForm[DateTime] {
+Seq[FieldConstraint[PrefillableNestedForm[DateTime]]] = Nil)(implicit val formatter:DateTimeFormatter) extends PrefillCanonicalConstrainedNestedForm[DateTime] {
   def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]) = new
-      JodaDateForm(stringData(data).map(n => new DateTime(n.s)))
+      JodaDateForm(stringData(data).map(n =>  DateTime.parse(n.s,formatter)))
   def fill(xopt: Option[DateTime]) = new JodaDateForm(xopt, constraints)
   def withConstraint(c: FieldConstraint[PrefillableNestedForm[DateTime]]) = new JodaDateForm(prefill, constraints :+ c)
 }

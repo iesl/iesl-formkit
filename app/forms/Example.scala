@@ -6,6 +6,7 @@ import org.joda.time.DateTime
 import play.api.libs.Files
 import play.api.libs.Files.TemporaryFile
 import play.api.mvc.MultipartFormData.FilePart
+import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 
 /**
  * A model type which we want to edit on a form.
@@ -46,6 +47,8 @@ class ExampleForm(override val prefill: Option[ExampleData] = None,
    * // careful: viewWithArgs, prefix etc.
    */
 
+  implicit val dateformat = DateTimeFormat.forPattern("dd MMM yyyy")
+  
   val name = FormField("name", TextForm(prefill.map(_.name)))
   val url = FormField("url", UrlForm(prefill.map(_.url)))
   val date = FormField("date", JodaDateForm(prefill.map(_.date)))

@@ -2,13 +2,13 @@
 
 -@ val it : forms.GenericFormField
 -@ val prefix : String
--@ val idPrefix : String = ""
+-@ val formUniqueId : String = ""
 -@ val validate : Boolean = false
 - import it._
 
 
 - val subprefix = (prefix + "." + key)
-- val id = idPrefix + subprefix.replace(".","_")
+- val id = formUniqueId + subprefix.replace(".","_")
 
 span.control-group.inline(class={if(validate && form.hasErrors) "error" else ""})
-  - viewWithArgs(form, "hidden", context)('prefix -> subprefix, 'idPrefix -> idPrefix, 'id -> id)
+  - viewWithArgs(form, "hidden", context)('prefix -> subprefix, 'formUniqueId -> formUniqueId, 'id -> id)

@@ -2,12 +2,12 @@
 
 -@ val it : forms.GenericRepeatedFormField
 -@ val prefix : String
--@ val idPrefix : String = ""
+-@ val formUniqueId : String = ""
 - import it._
 
 - val groupprefix = (prefix + "." + name)
 - for((f, index)<-(forms :+ formfactory()).zipWithIndex) {
 -   val subprefix = (groupprefix + "." + index)
--   val id = idPrefix + subprefix.replace(".","_")
--   viewWithArgs(f, "index", context)('prefix -> subprefix, 'idPrefix -> idPrefix, 'id -> id)
+-   val id = formUniqueId + subprefix.replace(".","_")
+-   viewWithArgs(f, "index", context)('prefix -> subprefix, 'formUniqueId -> formUniqueId, 'id -> id)
 - }

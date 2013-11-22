@@ -1,7 +1,7 @@
 
 
 -@ val prefix : String
--@ val idPrefix : String = ""
+-@ val formUniqueId : String = ""
 -@ val newRowUrl: String
 -@ val validate : Boolean = false
 
@@ -26,7 +26,7 @@
     span(class={"repeated" + groupid})
       - for((f, index)<-(showforms).zipWithIndex) {
       -   val subprefix = (groupprefix + "." + index)
-      -   val id = idPrefix + subprefix.replace(".","_")
-      -   template(f, "inline")("prefix" -> subprefix, "idPrefix" -> idPrefix, "id" -> id)
+      -   val id = formUniqueId + subprefix.replace(".","_")
+      -   template(f, "inline")("prefix" -> subprefix, "formUniqueId" -> formUniqueId, "id" -> id)
       - }
     span.help-inline= if(validate) errors.mkString("; ") else constraintInfos.mkString("; ")

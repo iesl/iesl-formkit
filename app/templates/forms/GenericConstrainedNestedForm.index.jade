@@ -1,12 +1,10 @@
-
-
 -@ val prefix: String
--@ val idPrefix : String = ""
+-@ val formUniqueId : String = ""
 
 - it.fixedValue match {
 -    case Some(value) => {
 -        context << value
--        template(it, "fixedfield")("prefix" -> prefix, "idPrefix" -> idPrefix)
+-        template(it, "fixedfield")("prefix" -> prefix, "formUniqueId" -> formUniqueId)
 -        }
--    case None => template(it, "field")("prefix" -> prefix, "idPrefix" -> idPrefix)
+-    case None => template(it, "field")("prefix" -> prefix, "formUniqueId" -> formUniqueId)
 -    }

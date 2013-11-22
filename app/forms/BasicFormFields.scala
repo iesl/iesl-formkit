@@ -17,25 +17,28 @@ import StringUtils._
  */
 
 case class TextAreaForm(override val prefill: Option[NonemptyString],
-                        override val constraints: Seq[FieldConstraint[PrefillableNestedForm[NonemptyString]]] = Nil)
+                        override val constraints: Seq[FieldConstraint[PrefillableNestedForm[NonemptyString]]] = Nil, placeholder:String = "")
   extends PrefillCanonicalConstrainedNestedForm[NonemptyString] {
   def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]) = new
-      TextAreaForm(stringData(data), constraints)
-
-  def fill(xopt: Option[NonemptyString]) = new TextAreaForm(xopt, constraints)
+      TextAreaForm(stringData(data), constraints, placeholder)
+  def fill(xopt: Option[NonemptyString]) = new TextAreaForm(xopt, constraints,placeholder)
   def withConstraint(c: FieldConstraint[PrefillableNestedForm[NonemptyString]]) = new TextAreaForm(prefill,
-    constraints :+ c)
+    constraints :+ c,placeholder)
+  def withPlaceholder(s:String) = new TextAreaForm(prefill,
+    constraints, s)
 }
 
 
 case class TextForm(override val prefill: Option[NonemptyString],
-                    override val constraints: Seq[FieldConstraint[PrefillableNestedForm[NonemptyString]]] = Nil)
+                    override val constraints: Seq[FieldConstraint[PrefillableNestedForm[NonemptyString]]] = Nil, placeholder:String = "")
   extends PrefillCanonicalConstrainedNestedForm[NonemptyString] {
   def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]) =
-    new TextForm(stringData(data), constraints)
-  def fill(xopt: Option[NonemptyString]) = new TextForm(xopt, constraints)
+    new TextForm(stringData(data), constraints, placeholder)
+  def fill(xopt: Option[NonemptyString]) = new TextForm(xopt, constraints, placeholder)
   def withConstraint(c: FieldConstraint[PrefillableNestedForm[NonemptyString]]) = new TextForm(prefill,
-    constraints :+ c)
+    constraints :+ c, placeholder)
+  def withPlaceholder(s:String) = new TextForm(prefill,
+    constraints, s)
 }
 
 
@@ -98,11 +101,12 @@ case class BooleanGroupForm(override val prefill: Option[GenSet[NonemptyString]]
 }
 
 case class UrlForm(override val prefill: Option[URL], override val constraints:
-Seq[FieldConstraint[PrefillableNestedForm[URL]]] = Nil) extends PrefillCanonicalConstrainedNestedForm[URL] {
+Seq[FieldConstraint[PrefillableNestedForm[URL]]] = Nil, placeholder:String="") extends PrefillCanonicalConstrainedNestedForm[URL] {
   def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]) =
-    new UrlForm(stringData(data).map(n => new URL(n.s)), constraints)
-  def fill(xopt: Option[URL]) = new UrlForm(xopt, constraints)
-  def withConstraint(c: FieldConstraint[PrefillableNestedForm[URL]]) = new UrlForm(prefill, constraints :+ c)
+    new UrlForm(stringData(data).map(n => new URL(n.s)), constraints, placeholder)
+  def fill(xopt: Option[URL]) = new UrlForm(xopt, constraints, placeholder)
+  def withConstraint(c: FieldConstraint[PrefillableNestedForm[URL]]) = new UrlForm(prefill, constraints :+ c,placeholder)
+  def withPlaceholder(s:String) = new UrlForm(prefill,constraints, s)
 }
 
 
@@ -132,4 +136,7 @@ Seq[FieldConstraint[PrefillableNestedForm[Boolean]]] = Nil) extends PrefillCanon
       BooleanForm(stringData(data).map(ne => fromString(ne.s)))
   def fill(xopt: Option[Boolean]) = new BooleanForm(xopt, constraints)
   def withConstraint(c: FieldConstraint[PrefillableNestedForm[Boolean]]) = new BooleanForm(prefill, constraints :+ c)
+  
+  // just do this in the template
+  //val prefillBool = prefill.getOrElse("false")
 }

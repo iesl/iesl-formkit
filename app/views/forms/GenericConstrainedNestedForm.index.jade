@@ -2,12 +2,12 @@
 
 -@ val it : forms.GenericConstrainedNestedForm
 -@ val prefix: String
--@ val idPrefix : String = ""
+-@ val formUniqueId : String = ""
 
 - it.fixedValue match {
 -    case Some(value) => {
 -        context << value
--        viewWithArgs(it, "fixedfield", context)('prefix -> prefix, 'idPrefix -> idPrefix)
+-        viewWithArgs(it, "fixedfield", context)('prefix -> prefix, 'formUniqueId -> formUniqueId)
 -        }
--    case None => viewWithArgs(it, "field", context)('prefix -> prefix, 'idPrefix -> idPrefix)
+-    case None => viewWithArgs(it, "field", context)('prefix -> prefix, 'formUniqueId -> formUniqueId)
 -    }

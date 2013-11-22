@@ -6,6 +6,6 @@
 -@ val rows: Int = 10
 
 .input
-  textarea(name={prefix} id={id} rows={rows} class={classattr})= prefill
+  textarea(name={prefix} id={id} rows={rows} placeholder={placeholder} class={classattr})= prefill
   span.help-inline= if(validate) errors.mkString("; ") else constraintInfos.mkString("; ")
   -# span.help-block this is the help-block

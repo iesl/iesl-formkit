@@ -1,11 +1,11 @@
 
 
 -@ val prefix : String
--@ val idPrefix : String = ""
+-@ val formUniqueId : String = ""
 
 - val groupprefix = (prefix + "." + name)
 - for((f, index)<-(forms :+ formfactory()).zipWithIndex) {
 -   val subprefix = (groupprefix + "." + index)
--   val id = idPrefix + subprefix.replace(".","_")
--   template(f, "index")("prefix" -> subprefix, "idPrefix" -> idPrefix, "id" -> id)
+-   val id = formUniqueId + subprefix.replace(".","_")
+-   template(f, "index")("prefix" -> subprefix, "formUniqueId" -> formUniqueId, "id" -> id)
 - }

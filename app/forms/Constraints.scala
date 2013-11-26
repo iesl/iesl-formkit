@@ -11,7 +11,7 @@ case class ConstraintNotMetException(s: String = "") extends Exception(s)
 class FieldConstraint[-T <: NestedForm[_]](errorText: String,
                                            val infoText: Option[String] = None)(f: (T => Option[Option[String]])) {
   def apply(t: T): Unit = f(t) map {
-    errorDetail => throw new ConstraintNotMetException(errorText + errorDetail.map(": " + _))
+    errorDetail => throw new ConstraintNotMetException(errorText + errorDetail.map(": " + _).getOrElse(""))
   }
 }
 
@@ -41,22 +41,28 @@ case class ParsedEmail(firstName: Option[NonemptyString], lastName: Option[Nonem
 object EmailParser {
   private val emailOnlyRE = """(?i)^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$""".r //http://www.regular-expressions.info/email.html 
 
-  private val nameAndEmailRE = """(?i)^(([^@]*)\s+)?(<?([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})>?)?$""".r
+  private val nameAndEmailRE = """(?i)^(([^@]*)\s+)?(<?([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})>?)?.*$""".r // just capture the first email, if any
 
   private val splitName = """(.*)\s+(.*)""".r
 
   def parseOne(s: String): Option[ParsedEmail] = {
-    val nameAndEmailRE(x,fullName, y, email) = s
-
-    // could use namejuggler; just be naive for now
     try {
-      val splitName(firstName, lastName) = fullName
+      val nameAndEmailRE(x, fullName, y, email) = s
 
-      email.opt.map(e => ParsedEmail(firstName.opt, lastName.opt, e))
+      // could use namejuggler; just be naive for now
+      try {
+
+        val splitName(firstName, lastName) = fullName
+
+        email.opt.map(e => ParsedEmail(firstName.opt, lastName.opt, e))
+      }
+      catch {
+        case e: MatchError if fullName == null || fullName.trim.isEmpty => email.opt.map(e => ParsedEmail(None, None, e))
+        case e: MatchError => email.opt.map(e => ParsedEmail(None, fullName.opt, e))
+      }
     }
     catch {
-      case e: MatchError if fullName == null || fullName.trim.isEmpty => email.opt.map(e => ParsedEmail(None, None, e))
-      case e: MatchError => email.opt.map(e => ParsedEmail(None, fullName.opt, e))
+      case e: MatchError => None
     }
 
   }

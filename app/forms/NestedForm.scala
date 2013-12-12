@@ -38,7 +38,10 @@ trait NestedForm[+F] extends GenericNestedForm {
    * @see get
    * @return
    */
-  def prefill: Option[F]
+  //def prefill: Option[F]
+
+  //def isEmpty: Boolean = prefill.isEmpty
+  def isEmpty: Boolean
 
   /**
    * Performs validations and returns a valid model object if possible.
@@ -57,7 +60,6 @@ trait NestedForm[+F] extends GenericNestedForm {
 
   def hasErrors: Boolean = errors.nonEmpty
 
-  def isEmpty: Boolean = prefill.isEmpty
 }
 
 
@@ -65,7 +67,7 @@ trait GenericConstrainedNestedForm extends GenericNestedForm {
   def fixedValue: Option[_]
 }
 
-
+// todo it's confusing and maybe wrong that all the constraint machinery is in PrefillableNestedForm
 trait ConstrainedNestedForm[F] extends GenericConstrainedNestedForm with PrefillableNestedForm[F] {
 
   self =>
@@ -112,8 +114,10 @@ trait ConstrainedNestedForm[F] extends GenericConstrainedNestedForm with Prefill
 
 trait PrefillableNestedForm[F] extends NestedForm[F] {
   val prefill: Option[F]
+  def isEmpty: Boolean = prefill.isEmpty
 
-
+  def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]): PrefillableNestedForm[F]
+  
   /**
    * Returns a new instance of this form with the underlying model object replaced.  The point of using this instead 
    * of the standard constructor is that we may want to fill() a form whose concrete type we do not know.  Also, 
@@ -122,7 +126,7 @@ trait PrefillableNestedForm[F] extends NestedForm[F] {
    * @param xopt
    * @return
    */
-  def fill(xopt: Option[F]): NestedForm[F]
+  def fill(xopt: Option[F]): PrefillableNestedForm[F]
 
   val constraints: Seq[FieldConstraint[PrefillableNestedForm[F]]] = Nil
 
@@ -134,6 +138,15 @@ trait PrefillableNestedForm[F] extends NestedForm[F] {
   def applyConstraints() {
     for (c <- constraints) c.apply(this)
   }
+
+  // don't do it this way, because it's likely that a high-level constraint (e.g. matching passwords) needs to be checked _after_ the subfields are resolved, but it's not obvious how to do that generically.
+ /* @throws(classOf[ConstraintNotMetException])
+  final def get: Option[F] = {
+    getAssumingConstraintsOK
+    applyConstraints()
+  }
+
+  def getAssumingConstraintsOK: Option[F]*/
 
   /**
    * Collect all constraint exceptions.
@@ -161,13 +174,17 @@ trait PrefillableNestedForm[F] extends NestedForm[F] {
  * Commonly used for basic fields (e.g., a text field that accepts any string).
  * @tparam F
  */
-trait PrefillCanonicalConstrainedNestedForm[F]  extends ConstrainedNestedForm[F] {
+
+private [forms] trait PrefillCanonicalConstrainedNestedForm[F]  extends ConstrainedNestedForm[F] {
   // ** This approach is bogus.  The trait should be eliminated, and the subclasses should implement bind() and get() properly.
-  
+  // Okay, maybe not completely bogus, but highly suspect anyway.  It should only be used for leaf forms, i.e. atomic input fields.
+  // For any form which has subforms, this breaks.  That's why it's private[forms].
+
   @throws(classOf[ConstraintNotMetException])
-  def get: Option[F] = {
+  override def get: Option[F] = { 
     applyConstraints()
     prefill
   }
 
 }
+

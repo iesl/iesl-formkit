@@ -86,9 +86,10 @@ class ExampleForm(override val prefill: Option[ExampleData] = None,
    * For a form consisting of multiple fields, it's rare that None would be a valid response.
    * @return
    */
-  def get: Some[ExampleData] = {
-    applyConstraints()
+  override def get: Some[ExampleData] = {
     
+    // what constraints could we possibly apply _before_ resolving the children?  This makes no sense
+    applyConstraints()
     try {
       // note this process validates that the data fits in ExampleData, which requires values for some fields, 
       // so if one of these nestedGet.get calls fails then that's really a validation error for a required field 

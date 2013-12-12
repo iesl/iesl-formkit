@@ -12,6 +12,8 @@ import scala.collection.{GenSet, mutable}
 import org.joda.time.format.DateTimeFormatter
 
 import StringUtils._
+import scala.collection.immutable.ListMap
+
 /*
  * Concrete form fields.  These have scalate view templates.
  */
@@ -66,7 +68,7 @@ Logging {
 
 
 case class TextSelectForm(override val prefill: Option[NonemptyString],
-                          options: mutable.LinkedHashMap[NonemptyString, NonemptyString],
+                          options: ListMap[NonemptyString, NonemptyString],
                           override val constraints: Seq[FieldConstraint[PrefillableNestedForm[NonemptyString]]] = Nil)
   extends PrefillCanonicalConstrainedNestedForm[NonemptyString] {
 
@@ -79,7 +81,7 @@ case class TextSelectForm(override val prefill: Option[NonemptyString],
 
 
 case class BooleanGroupForm(override val prefill: Option[GenSet[NonemptyString]],
-                          options: mutable.LinkedHashMap[NonemptyString, NonemptyString],
+                          options: ListMap[NonemptyString, NonemptyString],
                           override val constraints: Seq[FieldConstraint[PrefillableNestedForm[GenSet[NonemptyString]]]] = Nil)
   extends PrefillCanonicalConstrainedNestedForm[GenSet[NonemptyString]] {
   

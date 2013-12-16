@@ -43,6 +43,8 @@ case class TextForm(override val prefill: Option[NonemptyString],
     constraints, s)
 }
 
+// no need for HiddenTextForm; just use TextForm in hidden mode?
+// no: by using HiddenTextForm we can be sure in the code that a template won't inadvertently use the wrong mode.
 
 case class HiddenTextForm(override val prefill: Option[NonemptyString],
                           override val constraints: Seq[FieldConstraint[PrefillableNestedForm[NonemptyString]]] =
@@ -53,6 +55,7 @@ case class HiddenTextForm(override val prefill: Option[NonemptyString],
   def withConstraint(c: FieldConstraint[PrefillableNestedForm[NonemptyString]]) = new HiddenTextForm(prefill,
     constraints :+ c)
 }
+
 
 
 case class FileUploadForm(override val prefill: Option[FilePart[Files.TemporaryFile]] = None,
@@ -142,3 +145,20 @@ Seq[FieldConstraint[PrefillableNestedForm[Boolean]]] = Nil) extends PrefillCanon
   // just do this in the template
   //val prefillBool = prefill.getOrElse("false")
 }
+
+
+/**
+ * Utility class for cases where a form is required but we don't actually have one.  It's meaningless that it's Boolean.
+ * @param prefill
+ * @param constraints
+ */
+// oops this can't be filled or bound
+/*
+case class EmptyForm[T](override val prefill: Option[T] = None, override val constraints:
+Seq[FieldConstraint[PrefillableNestedForm[T]]] = Nil) extends PrefillCanonicalConstrainedNestedForm[T] {
+  def fromString(s: String): T = throw new NotImplementedError()
+  def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]) = this
+  def fill(xopt: Option[T]) = this
+  def withConstraint(c: FieldConstraint[PrefillableNestedForm[T]]) = this
+}
+*/

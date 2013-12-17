@@ -49,15 +49,17 @@ object EmailParser {
     try {
       val nameAndEmailRE(x, fullName, y, email) = s
 
+      val emailOpt = if(email==null) None else email.opt
+      
       // could use namejuggler; just be naive for now
       try {
-
+        
         val splitName(firstName, lastName) = fullName
 
         email.opt.map(e => ParsedEmail(firstName.opt, lastName.opt, e))
       }
       catch {
-        case e: MatchError if fullName == null || fullName.trim.isEmpty => email.opt.map(e => ParsedEmail(None, None, e))
+        case e: MatchError if fullName == null || fullName.trim.isEmpty => emailOpt.map(e => ParsedEmail(None, None, e))
         case e: MatchError => email.opt.map(e => ParsedEmail(None, fullName.opt, e))
       }
     }

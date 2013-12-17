@@ -5,6 +5,7 @@
 -# -@ val postUrl: String
 
 - val postUrl = "/eventtemplate/newevent"
+.ajaxerror
 form.ajax.form-horizontal(action="#{postUrl}" method="POST" data-replace=".form-event")
   -#fieldset  
   - view(it, "index")

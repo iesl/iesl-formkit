@@ -20,6 +20,7 @@
   label.control-label(class={if(validate && hasErrors) "validationerror" else ""})
     = displayName
     br
+    .ajaxerror
     a.ajax(href={newRowUrl + "/" + groupprefix + "." + (forms.size+1)} data-append={".repeated" + groupid} id={"increment" + groupid} onclick="increment()" data-spinner="off")
       i.icon-plus-sign(title="Add")
   .controls

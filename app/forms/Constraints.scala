@@ -3,7 +3,7 @@ package forms
 
 import edu.umass.cs.iesl.scalacommons.NonemptyString
 import edu.umass.cs.iesl.scalacommons.StringUtils._
-import scala.collection.GenTraversable
+import scala.collection.Traversable
 
 case class ConstraintNotMetException(s: String = "") extends Exception(s)
 
@@ -69,8 +69,7 @@ object EmailParser {
 
   }
 
-  // like Validation but without scalaz
-  def parseMulti(s: String): Either[GenTraversable[NonemptyString], GenTraversable[ParsedEmail]] = {
+  def parseMulti(s: String): Either[Traversable[NonemptyString], Traversable[ParsedEmail]] = {
     val lines = s.split("[,;\t\n]")
     val parsedLines = lines.flatMap(_.opt).map(s => (s, parseOne(s))).toMap
     val (success, failure) = parsedLines.partition(_._2.isDefined)

@@ -8,7 +8,7 @@ import org.joda.time.DateTime
 import play.api.libs.Files
 import play.api.mvc.MultipartFormData
 import play.api.mvc.MultipartFormData.FilePart
-import scala.collection.GenSet
+import scala.collection.Set
 import org.joda.time.format.DateTimeFormatter
 
 import StringUtils._
@@ -94,10 +94,10 @@ case class TextSelectForm(override val prefill: Option[NonemptyString],
 }
 
 
-case class BooleanGroupForm(override val prefill: Option[GenSet[NonemptyString]],
+case class BooleanGroupForm(override val prefill: Option[Set[NonemptyString]],
                             options: ListMap[NonemptyString, NonemptyString],
-                            override val constraints: Seq[FieldConstraint[PrefillableNestedForm[GenSet[NonemptyString]]]] = Nil)
-  extends PrefillCanonicalConstrainedNestedForm[GenSet[NonemptyString]] {
+                            override val constraints: Seq[FieldConstraint[PrefillableNestedForm[Set[NonemptyString]]]] = Nil)
+  extends PrefillCanonicalConstrainedNestedForm[Set[NonemptyString]] {
 
   val fields: Iterable[FormField[Boolean]] = options.map({
     case (key, name) => new FormField(key, new BooleanForm(prefill.map(p => p.contains(key))), Some(name))
@@ -109,11 +109,11 @@ case class BooleanGroupForm(override val prefill: Option[GenSet[NonemptyString]]
     new BooleanGroupForm(Some(trueFieldKeys), options, constraints)
   }
 
-  def fill(xopt: Option[GenSet[NonemptyString]]) = {
+  def fill(xopt: Option[Set[NonemptyString]]) = {
     new BooleanGroupForm(xopt, options, constraints)
   }
 
-  def withConstraint(c: FieldConstraint[PrefillableNestedForm[GenSet[NonemptyString]]]) = {
+  def withConstraint(c: FieldConstraint[PrefillableNestedForm[Set[NonemptyString]]]) = {
     new BooleanGroupForm(prefill, options, constraints :+ c)
   }
 

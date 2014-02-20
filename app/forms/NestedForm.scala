@@ -87,8 +87,7 @@ trait ConstrainedNestedForm[F] extends GenericConstrainedNestedForm with Prefill
     fixedConstraint.map(_.fixedValue)
   }
 
-  override def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]):
-  ConstrainedNestedForm[F]
+  override def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]): ConstrainedNestedForm[F]
 
 
   /**
@@ -104,9 +103,10 @@ trait ConstrainedNestedForm[F] extends GenericConstrainedNestedForm with Prefill
    * @param isRequired
    * @return
    */
-  def required(isRequired: Boolean = true): ConstrainedNestedForm[F] = if (isRequired) withConstraint(new
-      RequiredConstraint[PrefillableNestedForm[F]])
-  else this
+  def required(isRequired: Boolean = true): ConstrainedNestedForm[F] =
+    if (isRequired)
+      withConstraint(new RequiredConstraint[PrefillableNestedForm[F]])
+    else this
   
   def withMessage(message:String): ConstrainedNestedForm[F] = withConstraint(new InfoNoConstraint[PrefillableNestedForm[F]](message))
 }

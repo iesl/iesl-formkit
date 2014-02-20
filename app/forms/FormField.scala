@@ -20,8 +20,9 @@ trait GenericFormField {
   def form: GenericNestedForm
 }
 
-case class FormField[F](key: String, form: NestedForm[F], explicitDisplayName: Option[String] = None) extends
-GenericFormField {
+case class FormField[F](
+  key: String, form: NestedForm[F], explicitDisplayName: Option[String] = None
+) extends GenericFormField {
 
   /**
    * Return the validated value of the wrapped form (in the form of a model object).
@@ -64,9 +65,13 @@ trait GenericRepeatedFormField {
   def constraintInfos: Seq[String]
 }
 
-case class RepeatedFormField[F](name: String, forms: Seq[NestedForm[F]], formfactory: () => NestedForm[F],
-                                minimum: Int, explicitDisplayName: Option[String] = None) extends
-GenericRepeatedFormField {
+case class RepeatedFormField[F](
+  name: String,
+  forms: Seq[NestedForm[F]],
+  formfactory: () => NestedForm[F],
+  minimum: Int,
+  explicitDisplayName: Option[String] = None
+) extends GenericRepeatedFormField {
   @throws(classOf[ConstraintNotMetException])
   def get: Seq[F] = forms.flatMap(_.get)
   def displayName = explicitDisplayName.getOrElse(name)

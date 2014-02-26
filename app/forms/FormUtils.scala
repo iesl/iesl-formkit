@@ -63,13 +63,11 @@ object FormUtils extends Logging {
     }
   }
 
-  def getDataFromRequest(request: play.api.mvc.Request[AnyContent]): (Map[String, Seq[String]], Map[String,
-    MultipartFormData.FilePart[Files.TemporaryFile]]) = {
+  def getDataFromRequest(request: play.api.mvc.Request[AnyContent]): (Map[String, Seq[String]], Map[String, MultipartFormData.FilePart[Files.TemporaryFile]]) = {
 
     val normal: Map[String, Seq[String]] = request.body match {
       case body: play.api.mvc.AnyContent if body.asFormUrlEncoded.isDefined => body.asFormUrlEncoded.get
-      case body: play.api.mvc.AnyContent if body.asMultipartFormData.isDefined => body.asMultipartFormData.get
-        .asFormUrlEncoded
+      case body: play.api.mvc.AnyContent if body.asMultipartFormData.isDefined => body.asMultipartFormData.get.asFormUrlEncoded
       case body: play.api.mvc.AnyContent if body.asJson.isDefined => fromJson(js = body.asJson.get).mapValues(Seq(_))
       case body: Map[_, _] => body.asInstanceOf[Map[String, Seq[String]]]
       case body: play.api.mvc.MultipartFormData[_] => body.asFormUrlEncoded
@@ -120,7 +118,7 @@ object FormUtils extends Logging {
       }.foldLeft(Map.empty[String, String])(_ ++ _)
     }
     case JsNull => Map.empty
-    case JsUndefined(_) => Map.empty
+    case _:JsUndefined => Map.empty
     case JsBoolean(value) => Map(prefix -> value.toString)
     case JsNumber(value) => Map(prefix -> value.toString)
     case JsString(value) => Map(prefix -> value.toString)

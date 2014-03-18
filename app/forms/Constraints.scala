@@ -8,16 +8,20 @@ import scala.collection.Traversable
 case class ConstraintNotMetException(s: String = "") extends Exception(s)
 
 // the function f returns error messages, so None indicates success.
-class FieldConstraint[-T <: NestedForm[_]](errorText: String,
-                                           val infoText: Option[String] = None)(f: (T => Option[Option[String]])) {
+class FieldConstraint[-T <: NestedForm[_]](
+  errorText: String,
+  val infoText: Option[String] = None
+)(f: (T => Option[Option[String]])) {
   def apply(t: T): Unit = f(t) map {
     errorDetail => throw new ConstraintNotMetException(errorText + errorDetail.map(": " + _).getOrElse(""))
   }
 }
 
 
-class RequiredConstraint[T <: PrefillableNestedForm[_]] extends FieldConstraint[T]("required",
-  Some("*"))(t => if (t.prefill.nonEmpty) None else Some(None))
+class RequiredConstraint[T <: PrefillableNestedForm[_]] extends FieldConstraint[T](
+  "required",
+  Some("*")
+)(t => if (t.prefill.nonEmpty) None else Some(None))
 
 
 class EmailConstraint[T <: PrefillableNestedForm[NonemptyString]] extends FieldConstraint[T]("Invalid email address")(t => {

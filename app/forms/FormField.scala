@@ -3,9 +3,8 @@ package forms
 import play.api.libs.Files
 import play.api.mvc.MultipartFormData
 import scala.collection.immutable.ListMap
-import forms.FormUtils._
+import _root_.forms.FormUtils._
 import edu.umass.cs.iesl.scalacommons.NonemptyString
-import scala.Some
 
 /**
  * A "form field" wraps a nested form and gives it a key (for programmatic use in generated html, json, 

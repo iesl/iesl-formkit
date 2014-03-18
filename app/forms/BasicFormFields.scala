@@ -149,8 +149,10 @@ case class UrlForm(
 }
 
 
-case class JodaDateForm(override val prefill: Option[DateTime], override val constraints:
-Seq[FieldConstraint[PrefillableNestedForm[DateTime]]] = Nil)(implicit val formatter: DateTimeFormatter) extends PrefillCanonicalConstrainedNestedForm[DateTime] {
+case class JodaDateForm(
+  override val prefill: Option[DateTime],
+  override val constraints: Seq[FieldConstraint[PrefillableNestedForm[DateTime]]] = Nil
+)(implicit val formatter: DateTimeFormatter) extends PrefillCanonicalConstrainedNestedForm[DateTime] {
   def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]) = new
       JodaDateForm(stringData(data).map(n => DateTime.parse(n.s, formatter)))
 

@@ -1,6 +1,5 @@
 package forms
 
-import scala.Predef._
 import com.typesafe.scalalogging.slf4j.Logging
 import edu.umass.cs.iesl.scalacommons.StringUtils._
 import edu.umass.cs.iesl.scalacommons.NonemptyString
@@ -8,8 +7,6 @@ import play.api.libs.Files
 import play.api.libs.Files.TemporaryFile
 import play.api.mvc.{AnyContent, MultipartFormData}
 import play.api.mvc.MultipartFormData.FilePart
-import scala.Left
-import scala.Right
 
 /**
  * @author <a href="mailto:dev@davidsoergel.com">David Soergel</a>

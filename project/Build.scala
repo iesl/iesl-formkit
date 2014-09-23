@@ -12,17 +12,17 @@ object IeslFormKitBuild extends Build {
 
   implicit val allDeps: Dependencies = new Dependencies()
 
-  import allDeps._
+  // import allDeps._
   
   val deps = Seq(
     // todo : figure out which of these are not actually used locally
     // (I had to include them explicitly due to mysterious issues with transitive resolution)
 
-    "net.openreview" %% "scalate-core" % "latest.integration",
-    "net.openreview" %% "scalate-core-plus" % "latest.integration",
-    "net.openreview" %% "scalate-util" % "latest.integration",
-   
-    ieslScalaCommons("latest.integration")
+    //"net.openreview" %% "scalate-core" % "latest.integration",
+    //"net.openreview" %% "scalate-core-plus" % "latest.integration",
+    //"net.openreview" %% "scalate-util" % "latest.integration",
+    // 
+    "edu.umass.cs.iesl" %% "scalacommons" % "latest.integration"
   )
 
   lazy val ieslFormKit = {

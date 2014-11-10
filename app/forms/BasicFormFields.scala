@@ -1,7 +1,7 @@
 package forms
 
 import FormUtils._
-import com.typesafe.scalalogging.slf4j.Logging
+import com.typesafe.scalalogging.{StrictLogging => Logging}
 import edu.umass.cs.iesl.scalacommons.{StringUtils, NonemptyString}
 import java.net.URL
 import org.joda.time.DateTime

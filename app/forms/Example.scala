@@ -1,6 +1,6 @@
 package forms
 
-import edu.umass.cs.iesl.scalacommons.NonemptyString
+
 import java.net.URL
 import org.joda.time.DateTime
 import play.api.libs.Files
@@ -18,7 +18,7 @@ import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
  * @param tempFile
  */
 case class ExampleData(
-                        name: NonemptyString,
+                        name: String,
                         url: URL,
                         date: DateTime,
                         yesno: Boolean,

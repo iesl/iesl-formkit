@@ -1,8 +1,5 @@
 package forms
 
-
-import edu.umass.cs.iesl.scalacommons.NonemptyString
-import edu.umass.cs.iesl.scalacommons.StringUtils._
 import scala.collection.Traversable
 
 case class ConstraintNotMetException(s: String = "") extends Exception(s)
@@ -24,12 +21,12 @@ class RequiredConstraint[T <: PrefillableNestedForm[_]] extends FieldConstraint[
 )(t => if (t.prefill.nonEmpty) None else Some(None))
 
 
-class EmailConstraint[T <: PrefillableNestedForm[NonemptyString]] extends FieldConstraint[T]("Invalid email address")(t => {
+class EmailConstraint[T <: PrefillableNestedForm[String]] extends FieldConstraint[T]("Invalid email address")(t => {
   if (t.prefill.map(s => EmailParser.parseOne(s).isDefined).getOrElse(true)) None else Some(None)
 })
 
 
-class MultiEmailConstraint[T <: PrefillableNestedForm[NonemptyString]] extends FieldConstraint[T]("Invalid email addresses")(t => {
+class MultiEmailConstraint[T <: PrefillableNestedForm[String]] extends FieldConstraint[T]("Invalid email addresses")(t => {
   val errors = t.prefill.flatMap(s => {
     EmailParser.parseMulti(s) match {
       case Right(x) => None
@@ -40,7 +37,7 @@ class MultiEmailConstraint[T <: PrefillableNestedForm[NonemptyString]] extends F
 })
 
 
-case class ParsedEmail(firstName: Option[NonemptyString], lastName: Option[NonemptyString], email: NonemptyString)
+case class ParsedEmail(firstName: Option[String], lastName: Option[String], email: String)
 
 object EmailParser {
   private val emailOnlyRE = """(?i)^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$""".r //http://www.regular-expressions.info/email.html 
@@ -53,18 +50,18 @@ object EmailParser {
     try {
       val nameAndEmailRE(x, fullName, y, email) = s
 
-      val emailOpt = if(email==null) None else email.opt
+      val emailOpt = if(email==null) None else Some(email)
       
       // could use namejuggler; just be naive for now
       try {
         
         val splitName(firstName, lastName) = fullName
 
-        email.opt.map(e => ParsedEmail(firstName.opt, lastName.opt, e))
+        Some(email).map(e => ParsedEmail(Some(firstName), Some(lastName), e))
       }
       catch {
         case e: MatchError if fullName == null || fullName.trim.isEmpty => emailOpt.map(e => ParsedEmail(None, None, e))
-        case e: MatchError => email.opt.map(e => ParsedEmail(None, fullName.opt, e))
+        case e: MatchError => Some(email).map(e => ParsedEmail(None, Some(fullName), e))
       }
     }
     catch {
@@ -73,9 +70,9 @@ object EmailParser {
 
   }
 
-  def parseMulti(s: String): Either[Traversable[NonemptyString], Traversable[ParsedEmail]] = {
+  def parseMulti(s: String): Either[Traversable[String], Traversable[ParsedEmail]] = {
     val lines = s.split("[,;\t\n]")
-    val parsedLines = lines.flatMap(_.opt).map(s => (s, parseOne(s))).toMap
+    val parsedLines = lines.flatMap(Some(_)).map(s => (s, parseOne(s))).toMap
     val (success, failure) = parsedLines.partition(_._2.isDefined)
     if (failure.nonEmpty) Left(failure.keys)
     else Right(success.values.map(_.get))

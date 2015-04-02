@@ -2,7 +2,7 @@ package forms
 
 import FormUtils._
 import com.typesafe.scalalogging.{StrictLogging => Logging}
-import edu.umass.cs.iesl.scalacommons.{StringUtils, NonemptyString}
+
 import java.net.URL
 import org.joda.time.DateTime
 import play.api.libs.Files
@@ -11,7 +11,6 @@ import play.api.mvc.MultipartFormData.FilePart
 import scala.collection.Set
 import org.joda.time.format.DateTimeFormatter
 
-import StringUtils._
 import scala.collection.immutable.ListMap
 
 /*
@@ -19,17 +18,17 @@ import scala.collection.immutable.ListMap
  */
 
 case class TextAreaForm(
-  override val prefill: Option[NonemptyString],
-  override val constraints: Seq[FieldConstraint[PrefillableNestedForm[NonemptyString]]] = Nil, placeholder: String = ""
-)  extends PrefillCanonicalConstrainedNestedForm[NonemptyString] {
+  override val prefill: Option[String],
+  override val constraints: Seq[FieldConstraint[PrefillableNestedForm[String]]] = Nil, placeholder: String = ""
+)  extends PrefillCanonicalConstrainedNestedForm[String] {
 
   def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]) =
     new TextAreaForm(stringData(data), constraints, placeholder)
 
-  def fill(xopt: Option[NonemptyString]) =
+  def fill(xopt: Option[String]) =
     new TextAreaForm(xopt, constraints, placeholder)
 
-  def withConstraint(c: FieldConstraint[PrefillableNestedForm[NonemptyString]]) =
+  def withConstraint(c: FieldConstraint[PrefillableNestedForm[String]]) =
     new TextAreaForm(prefill, constraints :+ c, placeholder)
 
   def withPlaceholder(s: String) =
@@ -38,18 +37,18 @@ case class TextAreaForm(
 
 
 case class TextForm(
-  override val prefill: Option[NonemptyString],
-  override val constraints: Seq[FieldConstraint[PrefillableNestedForm[NonemptyString]]] = Nil,
+  override val prefill: Option[String],
+  override val constraints: Seq[FieldConstraint[PrefillableNestedForm[String]]] = Nil,
   placeholder: String = ""
-) extends PrefillCanonicalConstrainedNestedForm[NonemptyString] {
+) extends PrefillCanonicalConstrainedNestedForm[String] {
 
   def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]) =
     new TextForm(stringData(data), constraints, placeholder)
 
-  def fill(xopt: Option[NonemptyString]) =
+  def fill(xopt: Option[String]) =
     new TextForm(xopt, constraints, placeholder)
 
-  def withConstraint(c: FieldConstraint[PrefillableNestedForm[NonemptyString]]) =
+  def withConstraint(c: FieldConstraint[PrefillableNestedForm[String]]) =
     new TextForm(prefill, constraints :+ c, placeholder)
 
   def withPlaceholder(s: String) =
@@ -59,17 +58,17 @@ case class TextForm(
 // no need for HiddenTextForm; just use TextForm in hidden mode?
 // no: by using HiddenTextForm we can be sure in the code that a template won't inadvertently use the wrong mode.
 case class HiddenTextForm(
-  override val prefill: Option[NonemptyString],
-  override val constraints: Seq[FieldConstraint[PrefillableNestedForm[NonemptyString]]] = Nil
-) extends PrefillCanonicalConstrainedNestedForm[NonemptyString] {
+  override val prefill: Option[String],
+  override val constraints: Seq[FieldConstraint[PrefillableNestedForm[String]]] = Nil
+) extends PrefillCanonicalConstrainedNestedForm[String] {
 
   def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]) =
     new HiddenTextForm(stringData(data), constraints)
 
-  def fill(xopt: Option[NonemptyString]) =
+  def fill(xopt: Option[String]) =
     new HiddenTextForm(xopt, constraints)
 
-  def withConstraint(c: FieldConstraint[PrefillableNestedForm[NonemptyString]]) =
+  def withConstraint(c: FieldConstraint[PrefillableNestedForm[String]]) =
     new HiddenTextForm(prefill, constraints :+ c)
 }
 
@@ -91,26 +90,26 @@ case class FileUploadForm(
 
 
 case class TextSelectForm(
-  override val prefill: Option[NonemptyString],
-  options: ListMap[NonemptyString, NonemptyString],
-  override val constraints: Seq[FieldConstraint[PrefillableNestedForm[NonemptyString]]] = Nil
-) extends PrefillCanonicalConstrainedNestedForm[NonemptyString] {
+  override val prefill: Option[String],
+  options: ListMap[String, String],
+  override val constraints: Seq[FieldConstraint[PrefillableNestedForm[String]]] = Nil
+) extends PrefillCanonicalConstrainedNestedForm[String] {
 
   def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]) =
     new TextSelectForm(stringData(data), options, constraints)
 
-  def fill(xopt: Option[NonemptyString]) =
+  def fill(xopt: Option[String]) =
     new TextSelectForm(xopt, options, constraints)
 
-  def withConstraint(c: FieldConstraint[PrefillableNestedForm[NonemptyString]]) =
+  def withConstraint(c: FieldConstraint[PrefillableNestedForm[String]]) =
     new TextSelectForm(prefill, options, constraints :+ c)
 }
 
 
-case class BooleanGroupForm(override val prefill: Option[Set[NonemptyString]],
-                            options: ListMap[NonemptyString, NonemptyString],
-                            override val constraints: Seq[FieldConstraint[PrefillableNestedForm[Set[NonemptyString]]]] = Nil)
-  extends PrefillCanonicalConstrainedNestedForm[Set[NonemptyString]] {
+case class BooleanGroupForm(override val prefill: Option[Set[String]],
+                            options: ListMap[String, String],
+                            override val constraints: Seq[FieldConstraint[PrefillableNestedForm[Set[String]]]] = Nil)
+  extends PrefillCanonicalConstrainedNestedForm[Set[String]] {
 
   val fields: Iterable[FormField[Boolean]] = options.map({
     case (key, name) => new FormField(key, new BooleanForm(prefill.map(p => p.contains(key))), Some(name))
@@ -118,15 +117,15 @@ case class BooleanGroupForm(override val prefill: Option[Set[NonemptyString]],
 
   def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]) = {
     val boundFields = fields.map(_.nestedBind(data))
-    val trueFieldKeys = boundFields.filter(_.nestedGet.getOrElse(false)).map(_.key.n).toSet
+    val trueFieldKeys = boundFields.filter(_.nestedGet.getOrElse(false)).map(_.key).toSet
     new BooleanGroupForm(Some(trueFieldKeys), options, constraints)
   }
 
-  def fill(xopt: Option[Set[NonemptyString]]) = {
+  def fill(xopt: Option[Set[String]]) = {
     new BooleanGroupForm(xopt, options, constraints)
   }
 
-  def withConstraint(c: FieldConstraint[PrefillableNestedForm[Set[NonemptyString]]]) = {
+  def withConstraint(c: FieldConstraint[PrefillableNestedForm[Set[String]]]) = {
     new BooleanGroupForm(prefill, options, constraints :+ c)
   }
 
@@ -139,7 +138,7 @@ case class UrlForm(
 ) extends PrefillCanonicalConstrainedNestedForm[URL] {
 
   def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]) =
-    new UrlForm(stringData(data).map(n => new URL(n.s)), constraints, placeholder)
+    new UrlForm(stringData(data).map(n => new URL(n)), constraints, placeholder)
 
   def fill(xopt: Option[URL]) = new UrlForm(xopt, constraints, placeholder)
 
@@ -154,7 +153,7 @@ case class JodaDateForm(
   override val constraints: Seq[FieldConstraint[PrefillableNestedForm[DateTime]]] = Nil
 )(implicit val formatter: DateTimeFormatter) extends PrefillCanonicalConstrainedNestedForm[DateTime] {
   def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]) = new
-      JodaDateForm(stringData(data).map(n => DateTime.parse(n.s, formatter)))
+      JodaDateForm(stringData(data).map(n => DateTime.parse(n, formatter)))
 
   def fill(xopt: Option[DateTime]) = new JodaDateForm(xopt, constraints)
 
@@ -177,40 +176,40 @@ case class JodaDateAndHourForm(
   // users might want to think of it in terms of the end of the previous day, not the start of the next day.
   // oh well, it's easier to just call it (correctly) hour 0, so the template may need explanatory text.
   
-  private val timeOptions = ListMap[NonemptyString, NonemptyString]("0".n -> "Midnight (start of day)".n,
-    "1".n -> "1 AM".n,
-    "2".n -> "2 AM".n,
-    "3".n -> "3 AM".n,
-    "4".n -> "4 AM".n,
-    "5".n -> "5 AM".n,
-    "6".n -> "6 AM".n,
-    "7".n -> "7 AM".n,
-    "8".n -> "8 AM".n,
-    "9".n -> "9 AM".n,
-    "10".n -> "10 AM".n,
-    "11".n -> "11 AM".n,
-    "12".n -> "Noon".n,
-    "13".n -> "1 PM".n,
-    "14".n -> "2 PM".n,
-    "15".n -> "3 PM".n,
-    "16".n -> "4 PM".n,
-    "17".n -> "5 PM".n,
-    "18".n -> "6 PM".n,
-    "19".n -> "7 PM".n,
-    "20".n -> "8 PM".n,
-    "21".n -> "9 PM".n,
-    "22".n -> "10 PM".n,
-    "23".n -> "11 PM".n)
+  private val timeOptions = ListMap[String, String]("0" -> "Midnight (start of day)",
+    "1" -> "1 AM",
+    "2" -> "2 AM",
+    "3" -> "3 AM",
+    "4" -> "4 AM",
+    "5" -> "5 AM",
+    "6" -> "6 AM",
+    "7" -> "7 AM",
+    "8" -> "8 AM",
+    "9" -> "9 AM",
+    "10" -> "10 AM",
+    "11" -> "11 AM",
+    "12" -> "Noon",
+    "13" -> "1 PM",
+    "14" -> "2 PM",
+    "15" -> "3 PM",
+    "16" -> "4 PM",
+    "17" -> "5 PM",
+    "18" -> "6 PM",
+    "19" -> "7 PM",
+    "20" -> "8 PM",
+    "21" -> "9 PM",
+    "22" -> "10 PM",
+    "23" -> "11 PM")
 
   val date = FormField("date", JodaDateForm(prefill), Some("Date"))
-  val hour = FormField("hour", TextSelectForm(prefill.get.getHourOfDay.toString.opt, timeOptions), Some("Time"))
+  val hour = FormField("hour", TextSelectForm(Some(prefill.get.getHourOfDay.toString), timeOptions), Some("Time"))
 
   def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]) = {
     val dO = date.nestedBind(data)
     val hO = hour.nestedBind(data)
 
     // here's where we'd have to implement midnight special-casing
-    val updated : Option[DateTime] = dO.nestedGet.map(d=>d.withHourOfDay(hO.nestedGet.map(h=>h.s.toInt).getOrElse(24)))
+    val updated : Option[DateTime] = dO.nestedGet.map(d=>d.withHourOfDay(hO.nestedGet.map(h=>h.toInt).getOrElse(24)))
     
     new JodaDateAndHourForm(updated)
   }
@@ -237,7 +236,7 @@ case class BooleanForm(
   }
 
   def bind(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]) =
-    new BooleanForm(stringData(data).map(ne => fromString(ne.s)))
+    new BooleanForm(stringData(data).map(ne => fromString(ne)))
 
   def fill(xopt: Option[Boolean]) =
     new BooleanForm(xopt, constraints)

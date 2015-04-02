@@ -4,7 +4,7 @@ import play.api.libs.Files
 import play.api.mvc.MultipartFormData
 import scala.collection.immutable.ListMap
 import _root_.forms.FormUtils._
-import edu.umass.cs.iesl.scalacommons.NonemptyString
+
 
 /**
  * A "form field" wraps a nested form and gives it a key (for programmatic use in generated html, json, 
@@ -104,14 +104,14 @@ case class RepeatedFormField[F](
 
 
 case class AlternativeSubformsForm[G](override val prefill: Option[G],
-                                      options: ListMap[NonemptyString, PrefillableNestedForm[G]], // equivalently, a list of AlternativeSubform[T]
-                                      subformChooser: G => NonemptyString, // return the key of the form to show
+                                      options: ListMap[String, PrefillableNestedForm[G]], // equivalently, a list of AlternativeSubform[T]
+                                      subformChooser: G => String, // return the key of the form to show
                                       override val constraints: Seq[FieldConstraint[PrefillableNestedForm[G]]] = Nil)
   extends ConstrainedNestedForm[G] {
 
   //val fields : Iterable[FormField[T]] = options.map({case (key,name) => new FormField(key,new BooleanForm(prefill.map(p=>p.contains(key))),Some(name))})
 
-  val selectedFormKey : NonemptyString = prefill.map(subformChooser).getOrElse(options.head._1)
+  val selectedFormKey : String = prefill.map(subformChooser).getOrElse(options.head._1)
 
   val selectedForm: PrefillableNestedForm[G] = {
     prefill.map(x=>options(subformChooser(x))).getOrElse(options.head._2)

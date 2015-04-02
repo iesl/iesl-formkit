@@ -1,8 +1,8 @@
 package forms
 
 import com.typesafe.scalalogging.{StrictLogging => Logging}
-import edu.umass.cs.iesl.scalacommons.StringUtils._
-import edu.umass.cs.iesl.scalacommons.NonemptyString
+
+
 import play.api.libs.Files
 import play.api.libs.Files.TemporaryFile
 import play.api.mvc.{AnyContent, MultipartFormData}
@@ -90,8 +90,8 @@ object FormUtils extends Logging {
   }
 
   def stringData(data: Map[List[String], Either[String, MultipartFormData.FilePart[Files.TemporaryFile]]]):
-  Option[NonemptyString] = data.get(Nil).flatMap({
-    case Left(s) => s.opt
+  Option[String] = data.get(Nil).flatMap({
+    case Left(s) => Some(s)
     case Right(f) => throw new RuntimeException("Can't upload a file to a string field")
   })
   
